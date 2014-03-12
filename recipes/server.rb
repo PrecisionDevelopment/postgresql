@@ -87,6 +87,8 @@ bash "assign-postgres-password" do
   user 'postgres'
   code <<-EOH
 echo "ALTER ROLE postgres ENCRYPTED PASSWORD '#{node['postgresql']['password']['postgres']}';" | psql
+touch /tmp/postgres_password_set
   EOH
   action :run
+  not_if { ::File.exists?("/tmp/postgres_password_set") }
 end
